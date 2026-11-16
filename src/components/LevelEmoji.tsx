@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { EMOJI_DICTIONARY, EMOJI_MISSIONS } from "@/lib/gameData";
 import { playPop, playSuccess, playError, playVictory } from "@/lib/sound";
 import { Sparkles, BookOpen, Lightbulb, RefreshCw, CheckCircle, ArrowRight, Lock, Unlock } from "lucide-react";
@@ -89,10 +89,14 @@ export const LevelEmoji: React.FC<LevelEmojiProps> = ({ onEarnStar, onTriggerCon
     setMissionIndex((prev) => (prev + 1) % EMOJI_MISSIONS.length);
   };
 
-  // Generate shuffled candidate choices for kid-friendly selection
-  const candidateLetters = Array.from(
-    new Set([...targetChars, "A", "B", "K", "L", "M", "S", "T", "R", "U", "N", "O", "P"])
-  ).slice(0, 10);
+  // Generate candidate choices for kid-friendly selection
+  // Diurutkan secara alfabetis agar deterministik dan tidak menyebabkan hydration mismatch antara Server & Client
+  const candidateLetters = useMemo(() => {
+    const extraLetters = ["A", "B", "K", "L", "M", "S", "T", "R", "U", "N", "O", "P"];
+    const availableExtras = extraLetters.filter((char) => !targetChars.includes(char));
+    const remainingSlots = Math.max(0, 10 - targetChars.length);
+    return Array.from(new Set([...targetChars, ...availableExtras.slice(0, remainingSlots)])).sort();
+  }, [currentMission.word]);
 
   return (
     <div className="space-y-6">
@@ -108,11 +112,10 @@ export const LevelEmoji: React.FC<LevelEmojiProps> = ({ onEarnStar, onTriggerCon
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-black tracking-wide uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40">
                   Misi #{currentMission.id} dari {EMOJI_MISSIONS.length}
                 </span>
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-black flex items-center gap-1 ${
-                  currentMission.type === "decode"
-                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
-                    : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                }`}>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-black flex items-center gap-1 ${currentMission.type === "decode"
+                  ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
+                  : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                  }`}>
                   {currentMission.type === "decode" ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                   {currentMission.type === "decode" ? "Misi DECODING (Pecahkan Sandi)" : "Misi ENCODING (Rakit Sandi)"}
                 </span>
@@ -254,13 +257,12 @@ export const LevelEmoji: React.FC<LevelEmojiProps> = ({ onEarnStar, onTriggerCon
             return (
               <div
                 key={idx}
-                className={`w-12 h-14 sm:w-16 sm:h-18 rounded-2xl flex flex-col items-center justify-center border-2 transition-all font-black text-xl sm:text-2xl shadow-inner ${
-                  isFilled
-                    ? isSuccess
-                      ? "bg-green-500/30 border-green-400 text-green-300 scale-105"
-                      : "bg-indigo-600/40 border-indigo-400 text-white"
-                    : "bg-slate-950/60 border-slate-700 text-slate-500 border-dashed"
-                }`}
+                className={`w-12 h-14 sm:w-16 sm:h-18 rounded-2xl flex flex-col items-center justify-center border-2 transition-all font-black text-xl sm:text-2xl shadow-inner ${isFilled
+                  ? isSuccess
+                    ? "bg-green-500/30 border-green-400 text-green-300 scale-105"
+                    : "bg-indigo-600/40 border-indigo-400 text-white"
+                  : "bg-slate-950/60 border-slate-700 text-slate-500 border-dashed"
+                  }`}
               >
                 {currentMission.type === "decode" ? (
                   // Show entered letter
