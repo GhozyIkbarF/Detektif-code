@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles, HelpCircle, Trophy, Volume2, VolumeX, ShieldCheck } from "lucide-react";
+import { Sparkles, HelpCircle, Trophy, Volume2, VolumeX } from "lucide-react";
 import { playPop } from "@/lib/sound";
 
 interface NavbarProps {
@@ -24,114 +24,164 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleSound,
 }) => {
   const tabs = [
-    { id: "emoji" as const, label: "Level 1: Sandi Emoji", icon: "🐱🍎" },
-    { id: "binary" as const, label: "Level 2: Lampu Biner", icon: "💡🤖" },
-    { id: "caesar" as const, label: "Level 3: Sandi Geser", icon: "🎡🗝️" },
-    { id: "lab" as const, label: "Laboratorium Bebas", icon: "🧪✨" },
+    {
+      id: "emoji" as const,
+      num: "1",
+      shortLabel: "Emoji",
+      fullLabel: "Level 1: Sandi Emoji",
+      icon: "🐱",
+    },
+    {
+      id: "binary" as const,
+      num: "2",
+      shortLabel: "Biner",
+      fullLabel: "Level 2: Lampu Biner",
+      icon: "💡",
+    },
+    {
+      id: "caesar" as const,
+      num: "3",
+      shortLabel: "Geser",
+      fullLabel: "Level 3: Sandi Geser",
+      icon: "🎡",
+    },
+    {
+      id: "lab" as const,
+      num: "Lab",
+      shortLabel: "Lab Bebas",
+      fullLabel: "Laboratorium Bebas",
+      icon: "🧪",
+    },
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-indigo-500/30 px-3 py-2.5 sm:px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-        {/* Brand / Title */}
-        <div className="flex items-center justify-between w-full md:w-auto">
-          <div className="flex items-center gap-2.5">
-            <span className="text-3xl animate-bounce">🕵️‍♂️</span>
+    <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-indigo-500/20 shadow-lg shadow-black/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5">
+        <div className="flex items-center justify-between gap-4">
+          {/* LEFT: Brand Identity */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-purple-500/30 to-pink-500/20 border border-indigo-400/30 flex items-center justify-center text-2xl shadow-inner select-none transition-transform hover:scale-105">
+              🕵️‍♂️
+            </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 bg-clip-text text-transparent">
-                Detektif Kode Rahasia
-              </h1>
-              <p className="text-xs text-indigo-200 font-medium hidden sm:block">
-                Petualangan Belajar Encoding &amp; Decoding untuk Anak
+              <div className="flex items-center gap-2">
+                <h1 className="text-base sm:text-lg font-black tracking-tight bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 bg-clip-text text-transparent leading-none">
+                  Detektif Kode
+                </h1>
+                <span className="hidden sm:inline-flex px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 rounded-full">
+                  Kids Edition
+                </span>
+              </div>
+              <p className="text-[11px] text-indigo-200/80 font-medium hidden sm:block mt-0.5 leading-none">
+                Petualangan Belajar Encoding &amp; Decoding
               </p>
             </div>
           </div>
 
-          {/* Quick buttons on mobile */}
-          <div className="flex items-center gap-2 md:hidden">
+          {/* CENTER: Clean Segmented Pill Navigation */}
+          <nav className="hidden md:flex items-center p-1 bg-slate-950/80 rounded-2xl border border-indigo-500/20 shadow-inner">
+            {tabs.map((tab) => {
+              const isActive = currentTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    playPop();
+                    onSelectTab(tab.id);
+                  }}
+                  className={`group relative flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs lg:text-sm font-bold transition-all duration-200 cursor-pointer select-none ${
+                    isActive
+                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-indigo-600/30 font-extrabold scale-[1.02]"
+                      : "text-slate-300 hover:text-white hover:bg-slate-800/60"
+                  }`}
+                >
+                  <span className="text-base leading-none transition-transform group-hover:scale-110">
+                    {tab.icon}
+                  </span>
+                  <span className="hidden xl:inline">{tab.fullLabel}</span>
+                  <span className="xl:hidden">{tab.shortLabel}</span>
+
+                  {/* Active Indicator Dot */}
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-300 animate-pulse hidden xl:block" />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* RIGHT: Actions Toolbar */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Stars & Certificate Button */}
             <button
               onClick={() => {
                 playPop();
                 onOpenCertificate();
               }}
-              className="flex items-center gap-1 bg-amber-500/20 text-yellow-300 border border-yellow-500/40 px-2 py-1 rounded-full text-xs font-bold"
+              title="Lihat Sertifikat Detektif"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/15 to-yellow-500/15 hover:from-amber-500/25 hover:to-yellow-500/25 text-yellow-300 border border-yellow-500/30 hover:border-yellow-400/60 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-extrabold cursor-pointer transition-all shadow-sm active:scale-95"
             >
-              ⭐ {stars}
+              <Trophy className="w-4 h-4 text-yellow-400" />
+              <span>{stars}</span>
+              <span className="hidden sm:inline text-xs text-yellow-200/90 font-bold">Bintang</span>
             </button>
+
+            {/* Sound Toggle Button (Desktop & Tablet) */}
+            <button
+              onClick={() => {
+                playPop();
+                onToggleSound();
+              }}
+              className="hidden sm:flex p-2 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 hover:border-slate-600 text-slate-200 rounded-xl transition cursor-pointer active:scale-95"
+              title={soundEnabled ? "Matikan Suara" : "Nyalakan Suara"}
+            >
+              {soundEnabled ? (
+                <Volume2 className="w-4 h-4 text-emerald-400" />
+              ) : (
+                <VolumeX className="w-4 h-4 text-slate-400" />
+              )}
+            </button>
+
+            {/* How to Play Button */}
             <button
               onClick={() => {
                 playPop();
                 onOpenTutorial();
               }}
-              className="p-1.5 bg-indigo-600/40 hover:bg-indigo-600 text-indigo-200 rounded-full"
-              title="Bantuan & Panduan"
+              className="flex items-center gap-1.5 bg-indigo-600/80 hover:bg-indigo-500 text-white border border-indigo-400/40 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition shadow-md shadow-indigo-600/20 active:scale-95"
             >
-              <HelpCircle className="w-5 h-5" />
+              <HelpCircle className="w-4 h-4 text-yellow-300" />
+              <span className="hidden sm:inline">Cara Main</span>
             </button>
           </div>
         </div>
 
-        {/* Level Navigation Tabs */}
-        <nav className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
-          {tabs.map((tab) => {
-            const isActive = currentTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  playPop();
-                  onSelectTab(tab.id);
-                }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 whitespace-nowrap cursor-pointer shadow-sm ${
-                  isActive
-                    ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-purple-500/30 scale-105"
-                    : "bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 hover:text-white"
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Action Controls (Stars, Audio, Certificate, Help) */}
-        <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={() => {
-              playPop();
-              onOpenCertificate();
-            }}
-            className="flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-yellow-300 border border-yellow-500/40 px-3 py-1.5 rounded-full text-sm font-extrabold cursor-pointer transition"
-          >
-            <Sparkles className="w-4 h-4 text-yellow-400 animate-spin" />
-            <span>⭐ {stars} Bintang</span>
-          </button>
-
-          <button
-            onClick={() => {
-              playPop();
-              onToggleSound();
-            }}
-            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition cursor-pointer"
-            title={soundEnabled ? "Matikan Suara" : "Nyalakan Suara"}
-          >
-            {soundEnabled ? <Volume2 className="w-4 h-4 text-green-400" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
-          </button>
-
-          <button
-            onClick={() => {
-              playPop();
-              onOpenTutorial();
-            }}
-            className="flex items-center gap-1.5 bg-indigo-600/60 hover:bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition shadow"
-          >
-            <HelpCircle className="w-4 h-4 text-yellow-300" />
-            <span>Cara Main</span>
-          </button>
+        {/* MOBILE SUB-NAV (Horizontal Scroll on Mobile Only) */}
+        <div className="md:hidden mt-2 pt-2 border-t border-slate-800/60">
+          <nav className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {tabs.map((tab) => {
+              const isActive = currentTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    playPop();
+                    onSelectTab(tab.id);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black shadow-sm"
+                      : "bg-slate-800/70 text-slate-300"
+                  }`}
+                >
+                  <span>{tab.icon}</span>
+                  <span>{tab.shortLabel}</span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
       </div>
     </header>
   );
 };
-

@@ -135,7 +135,7 @@ export const LevelEmoji: React.FC<LevelEmojiProps> = ({ onEarnStar, onTriggerCon
               className="flex items-center gap-1.5 px-3 py-2 bg-indigo-600/60 hover:bg-indigo-600 text-indigo-100 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer shadow"
             >
               <BookOpen className="w-4 h-4 text-yellow-300" />
-              <span>{showDictionary ? "Tutup Kamus" : "Buku Kamus Kode 📖"}</span>
+              <span>{showDictionary ? "Tutup Kamus" : "Kamus Kode"}</span>
             </button>
             <button
               onClick={() => {
@@ -317,8 +317,8 @@ export const LevelEmoji: React.FC<LevelEmojiProps> = ({ onEarnStar, onTriggerCon
                 ))}
               </div>
             ) : (
-              /* Emoji choices */
-              <div className="flex flex-wrap justify-center gap-2 max-w-xl mx-auto">
+              /* Emoji choices (Hanya menampilkan simbol emoji tanpa huruf bantuan) */
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 max-w-xl mx-auto">
                 {candidateLetters.map((char) => {
                   const info = EMOJI_DICTIONARY[char];
                   if (!info) return null;
@@ -326,10 +326,12 @@ export const LevelEmoji: React.FC<LevelEmojiProps> = ({ onEarnStar, onTriggerCon
                     <button
                       key={char}
                       onClick={() => handleSelectEmoji(char)}
-                      className="px-3 py-2 bg-slate-800 hover:bg-purple-900/60 active:scale-95 rounded-xl border border-slate-700 hover:border-purple-400 flex items-center gap-1.5 transition cursor-pointer shadow"
+                      className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/90 hover:bg-purple-900/70 active:scale-95 rounded-2xl border border-slate-700 hover:border-purple-400 flex items-center justify-center transition-all cursor-pointer shadow-md hover:shadow-purple-500/20"
+                      title={info.name}
                     >
-                      <span className="text-2xl">{info.emoji}</span>
-                      <span className="font-bold text-xs text-yellow-300">({char})</span>
+                      <span className="text-2xl sm:text-3xl transition-transform hover:scale-110">
+                        {info.emoji}
+                      </span>
                     </button>
                   );
                 })}
